@@ -54,7 +54,20 @@ function manage_pkgs() {
     apt upgrade -qy
   fi
 
-  apt purge -qy netplan.io nano ubuntu-release-upgrader-core
+  apt purge -qy netplan.io ubuntu-release-upgrader-core || true
+
+  if [ "$(hostname)" == "raspberrypi" ]; then
+    apt purge -qy lightdm pulseaudio cups-daemon avahi-daemon chromium-browser gvfs mailcap man-db vlc dbus-x11 lightdm-gtk-greeter \
+      gnome-desktop3-data gnome-keyring gnome-session-bin gnome-accessibility-themes gnome-icon-theme gnome-menus gnome-session-common \
+      gsettings-desktop-schemas desktop-base lxde-common lxde-icon-theme cifs-utils xserver-common xserver-xorg xserver-xorg-core x11-xserver-utils \
+      desktop-file-utils gstreamer* gtk-update-icon-cache gtk2-engines hicolor-icon-theme lxhotkey-core lxmenu-data lxsession-data xdg-utils \
+      mesa-va-drivers mesa-vdpau-drivers x11-common libgl1-mesa-dri libglapi-mesa libgles2-mesa javascript-common nfs-common manpages manpages-dev \
+      python3-webencodings python3-touchphat python3-requests python3-lxml python3-buttonshim python3-scrollphat python3-scrollphathd python3-pianohat \
+      python3-phatbeat python3-pantilthat python3-microdotphat python3-fourletterphat python3-flask python3-envirophat python3-drumhat python3-sn3218 \
+      python3-automationhat python3-blinkt python3-explorerhat python3-gpiozero python3-motephat python3-skywriter python3-cap1xxx python3-gi \
+      python3-picamera python3-pigpio python3-rainbowhat python3-serial python3-unicornhathd python3-rpi.gpio python3-cupshelpers build-essential \
+      laptop-detect libx11-data wamerican wbritish vcdbg crda libgtk-3-common libgtk2.0-common xkb-data
+  fi
 
   if [ -z "$(ls /sys/class/net/wlan*/address)"]; then
     apt purge -qy wpasupplicant wireless-tools wireless-regdb modemmanager
@@ -62,12 +75,11 @@ function manage_pkgs() {
 
   apt install --no-install-recommends -qy vim apt-transport-https git
   apt autoremove -qy
-  apt clean -qy
-  apt autoclean -qy
 }
 
 case "$(uname -m)" in
   "armv6l" | "armv7l")
+    manage_pkgs
     change_hostname
     ;;
   *)
@@ -75,4 +87,3 @@ case "$(uname -m)" in
     exit 1
     ;;
 esac
-
