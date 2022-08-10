@@ -2,6 +2,8 @@
 
 set -eu
 
+export DEBIAN_FRONTEND=noninteractive
+
 function change_hostname() {
   MAC=''
   HWDEV='unkn'
